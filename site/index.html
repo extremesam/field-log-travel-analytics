@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Field Log — Nine years of movement, mapped</title>
+<meta name="description" content="A personal GIS analytics project: nine years of Google Timeline data turned into maps, charts, and infographics.">
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+</head>
+<body>
+
+<nav class="topnav">
+  <div class="wrap">
+    <div class="brand">FIELD_LOG<span class="dot">·</span>2017–2026</div>
+    <ul class="navlinks">
+      <li><a href="#overview">Overview</a></li>
+      <li><a href="#trends">Trends</a></li>
+      <li><a href="#modes">Modes</a></li>
+      <li><a href="#rhythm">Rhythm</a></li>
+      <li><a href="#places">Places &amp; States</a></li>
+      <li><a href="#migration">Migration</a></li>
+      <li><a href="#map">Map</a></li>
+      <li><a href="#trips">Longest trips</a></li>
+    </ul>
+  </div>
+</nav>
+
+<header class="hero" id="overview">
+  <div class="wrap hero-content">
+    <p class="eyebrow">Personal GIS analytics · Google Timeline · Feb 2017 – Aug 2026</p>
+    <h1>Nine years of movement,<br>mapped as <span class="accent">data</span>.</h1>
+    <p class="hero-desc">142,000+ location and trajectory coordinates from one person's Google Timeline — visualised as yearly trends, travel-mode breakdowns, commuter rhythms, journeys across 12 Nigerian states, and an interactive GIS map.</p>
+    <p class="coord-ticker mono" id="coordTicker">LAT <span>7.287</span> · LON <span>5.149</span> · loading dataset…</p>
+    <div class="stat-row" id="statRow">
+      <div class="stat"><div class="val">…</div><div class="label">Total distance</div></div>
+      <div class="stat"><div class="val">…</div><div class="label">Years tracked</div></div>
+      <div class="stat"><div class="val">…</div><div class="label">Trips logged</div></div>
+      <div class="stat"><div class="val">…</div><div class="label">Places visited</div></div>
+    </div>
+  </div>
+</header>
+
+<section id="trends">
+  <div class="wrap">
+    <p class="eyebrow">01 · Yearly trends</p>
+    <h2>Distance and visits, year over year</h2>
+    <p class="section-sub">2020 stands out — more distance covered than most years, despite being the pandemic year. Track how movement volume rises and falls across nearly a decade.</p>
+    <div class="panel">
+      <div class="chart-box" style="height:320px;">
+        <canvas id="yearlyChart" role="img" aria-label="Bar chart of total distance traveled in kilometers per year, 2017 to 2026"></canvas>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="modes">
+  <div class="wrap">
+    <p class="eyebrow">02 · Travel modes</p>
+    <h2>How movement happened</h2>
+    <p class="section-sub">Passenger vehicle trips dominate every year, but by 2025 walking nearly catches up — and cycling appears for the first time in any meaningful volume.</p>
+    <div class="panel">
+      <div class="chart-box" style="height:340px;">
+        <canvas id="modeChart" role="img" aria-label="Stacked bar chart of travel mode counts per year"></canvas>
+      </div>
+      <div class="legend" id="modeLegend"></div>
+    </div>
+
+    <div class="grid-2" style="margin-top:20px;">
+      <div class="panel">
+        <p class="eyebrow" style="margin-bottom:4px;">Seasonality</p>
+        <h3 style="font-size:16px; margin-bottom:14px;">Distance by calendar month, all years combined</h3>
+        <div class="chart-box" style="height:220px;">
+          <canvas id="monthChart" role="img" aria-label="Bar chart of total distance by calendar month, aggregated across all years"></canvas>
+        </div>
+      </div>
+      <div class="panel">
+        <p class="eyebrow" style="margin-bottom:4px;">Rhythm</p>
+        <h3 style="font-size:16px; margin-bottom:14px;">Trips by hour of day</h3>
+        <div class="chart-box" style="height:220px;">
+          <canvas id="hourChart" role="img" aria-label="Bar chart of trip counts by hour of day, showing a morning peak around 7am and an evening peak around 5 to 6pm"></canvas>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="rhythm">
+  <div class="wrap">
+    <p class="eyebrow">03 · Weekly rhythm</p>
+    <h2>Every trip, by day and hour</h2>
+    <p class="section-sub">A commuter shape repeats through the week: a hard peak around 7am, a softer one at 5&ndash;6pm, and Wednesdays consistently the quietest day.</p>
+    <div class="panel">
+      <div id="heatmapGrid" class="heatmap-grid" role="img" aria-label="Heatmap grid of trip counts by day of week and hour of day, showing peaks around 7am and 5 to 6pm on most days"></div>
+      <div class="heatmap-scale" id="heatmapScale"></div>
+    </div>
+  </div>
+</section>
+
+<section id="places">
+  <div class="wrap">
+    <p class="eyebrow">04 · Places &amp; States Visited</p>
+    <h2>Every state passed through and lived in</h2>
+    <p class="section-sub">A personal chronicle across 12 Nigerian states — from schooling at FUTA in Ondo and NYSC in Lagos to NAF screening in Kaduna, university field mapping in Edo, weddings, family visits, and home bases across Oyo, Ekiti, and Ogun State.</p>
+    
+    <div class="places-filter-bar" id="placesFilterBar">
+      <button class="place-filter-btn active" data-filter="all">All States (12)</button>
+      <button class="place-filter-btn" data-filter="residence">Lived &amp; Primary Base (4)</button>
+      <button class="place-filter-btn" data-filter="visited">Visited &amp; Explored (6)</button>
+      <button class="place-filter-btn" data-filter="transit">Transit Corridors (2)</button>
+    </div>
+
+    <div class="places-grid" id="placesGrid"></div>
+
+    <div class="panel" style="margin-top:24px;">
+      <p class="eyebrow" style="margin-bottom:4px;">Distance Breakdown</p>
+      <h3 style="font-size:16px; margin-bottom:14px;">Total distance by state (km)</h3>
+      <div class="chart-box" style="height:260px;">
+        <canvas id="stateChart" role="img" aria-label="Horizontal bar chart of total distance traveled per Nigerian state"></canvas>
+      </div>
+    </div>
+
+    <div class="panel" style="margin-top:24px;">
+      <h3 class="panel-title">Regional Distribution</h3>
+      <p class="panel-desc">A vast majority of tracked time and data points are concentrated in the Southwest region (Oyo, Ogun, Lagos, Ekiti), reflecting long-term living and work bases. Visits to the South-South (Rivers, Edo) and the North (Kaduna, Abuja, Kogi) represent distinct chapters of travel for education, family, and specific career events.</p>
+    </div>
+  </div>
+</section>
+
+<section id="migration">
+  <div class="wrap">
+    <p class="eyebrow">05 · Home &amp; work migration</p>
+    <h2>Where home and work were, year by year</h2>
+    <p class="section-sub">Google's own place inference (home / work / searched address) tracked, in real time, four moves across Nigeria — Ekiti, Oyo, Lagos, and Ogun State.</p>
+    <div class="panel" id="migrationLog"></div>
+  </div>
+</section>
+
+<section id="map">
+  <div class="wrap">
+    <p class="eyebrow">06 · Interactive GIS Map</p>
+    <h2>Every place &amp; corridor across Nigeria</h2>
+    <p class="section-sub">4,500+ density points, state markers, and migration trails spanning Kaduna in the north to Port Harcourt in the south. Use quick-jump buttons to navigate regions.</p>
+    
+    <div class="map-header-bar">
+      <div class="map-pills" id="mapPills">
+        <button class="map-pill-btn active" data-region="all">🇳🇬 All Nigeria</button>
+        <button class="map-pill-btn" data-region="kaduna">📍 Kaduna &amp; North</button>
+        <button class="map-pill-btn" data-region="portharcourt">🌊 Port Harcourt &amp; South</button>
+        <button class="map-pill-btn" data-region="abuja">🏛️ Abuja (FCT)</button>
+        <button class="map-pill-btn" data-region="southwest">🏙️ Southwest Hubs</button>
+      </div>
+      <div id="mapLegendRow" class="legend" style="margin:0; display:flex; gap:12px; font-size:11px;"></div>
+    </div>
+
+    <div class="panel" style="padding: 0; overflow: hidden; position: relative;">
+      <div id="map-el"></div>
+    </div>
+  </div>
+</section>
+
+<section id="trips">
+  <div class="wrap">
+    <p class="eyebrow">07 · Longest single trips</p>
+    <h2>The outliers</h2>
+    <p class="section-sub">The furthest single continuous trips in the dataset — including one likely GPS anomaly, flagged rather than hidden.</p>
+    <div class="panel">
+      <table class="trip-table" id="tripsTable">
+        <thead>
+          <tr><th>Date</th><th>Mode</th><th>Distance</th><th>Duration</th></tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+      <p class="note" id="glitchNote"></p>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="kv-grid" id="footerStats"></div>
+    <p style="margin-top:28px;">Built from a personal Google Timeline export. Map tiles &copy; <a href="https://carto.com/attributions" target="_blank" rel="noopener">CARTO</a>, data &copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors. Charts via Chart.js, maps via Leaflet.</p>
+    <p><a href="https://github.com/extremesam" target="_blank" rel="noopener">github.com/extremesam</a></p>
+  </div>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://unpkg.com/leaflet.heat@0.2.0/dist/leaflet-heat.js"></script>
+<script src="js/app.js?v=6"></script>
+</body>
+</html>
