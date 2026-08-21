@@ -8,18 +8,19 @@ A personal GIS analytics project built from a real Google Timeline export (Febru
 
 | Section | Description |
 |---------|-------------|
-| **Overview** | Hero banner with an animated SVG tracing the home-migration path (Ekiti → Oyo → Lagos → Ogun), live coordinate ticker, and headline stats: total distance, years tracked, trips logged, places visited. |
+| **Overview** | Hero banner with live coordinate ticker, headline stats: total distance, years tracked, trips logged, places visited. |
 | **Yearly trends** | Bar chart of distance and visit volume per year (2017–2026). |
 | **Travel modes** | Stacked bar chart of passenger vehicle / walking / motorcycling / cycling / bus per year, plus monthly seasonality and hour-of-day rhythm charts. |
 | **Weekly rhythm** | Weekday × hour heatmap grid showing commuter peaks and quiet days. |
-| **Distance by state** | Horizontal bar chart bucketing trip start-points into the four Nigerian states the dataset touches. |
-| **Home & work migration** | Year-by-year log of Google's inferred home/work locations, tracking four real relocations across Nigeria. |
-| **Interactive map** | Leaflet + Leaflet.heat density map of every visited coordinate on CARTO dark tiles, with the home migration path overlaid as a dashed route. Supports scroll-wheel zoom, auto-fits to the data bounds. |
+| **Places & States Visited** | Complete index across all 12 Nigerian states in the dataset, categorised into **Primary Residence Hubs** (Ekiti, Lagos, Oyo, Ogun), **Visited & Explored States** (Kaduna, Osun, Abuja FCT, Edo, Ondo, Kogi, Rivers / Port Harcourt), and **Transit Corridors** (Niger State) with active years, visit volumes, and direct "View on Map" zoom actions. |
+| **Distance by state** | Horizontal bar chart of kilometers tracked across all Nigerian states. |
+| **Home & work migration** | Year-by-year log of Google's inferred home/work locations, tracking real relocations across Nigeria. |
+| **Interactive GIS map** | Leaflet + Leaflet.heat map of 4,500+ density points on CARTO dark tiles, with region quick-jump navigation (🇳🇬 All Nigeria, 📍 Kaduna & North, 🌊 Port Harcourt & South, 🏛️ Abuja, 🏙️ Southwest Hubs), custom interactive state markers with popups, and the home migration route overlaid. |
 | **Longest trips** | Table of top single-trip outliers, including one flagged GPS anomaly (~1,885 km in 13 hours) — kept visible rather than silently dropped, excluded only from aggregate distance totals. |
 
 ## Data pipeline
 
-`data_pipeline/build_data.py` reads a Google Takeout `Timeline.json` export and produces 11 small aggregated JSON files (under 20 KB combined) in `site/data/`. The raw export (30+ MB) is never shipped to the browser — only the aggregates are.
+`data_pipeline/build_data.py` reads a Google Takeout `Timeline.json` export and produces 12 aggregated JSON files in `site/data/`. The raw export (35+ MB) is never shipped to the browser — only the lightweight aggregates are.
 
 To regenerate from a new export:
 
@@ -32,7 +33,7 @@ python data_pipeline/build_data.py
 
 The script automatically locates `Timeline.json` relative to its own directory using `pathlib`, so it works on any OS without editing paths.
 
-**Output files:** `overview.json`, `yearly.json`, `modes_by_year.json`, `monthly.json`, `dow_hour.json`, `state_summary.json`, `home_work_by_year.json`, `visit_heatmap.json`, `top_clusters.json`, `longest_trips.json`, `visit_stats.json`.
+**Output files:** `overview.json`, `yearly.json`, `modes_by_year.json`, `monthly.json`, `dow_hour.json`, `state_summary.json`, `home_work_by_year.json`, `visit_heatmap.json`, `top_clusters.json`, `longest_trips.json`, `visit_stats.json`, `all_places.json`.
 
 ## Stack
 
